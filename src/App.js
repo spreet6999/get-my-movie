@@ -1,30 +1,56 @@
 // App.js
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import MovieList from "./components/MovieList";
 import GenreFilter from "./components/GenreFilters";
 import { fetchGenres, fetchMovies } from "./api/services";
+import NavBar from "./components/common/NavBar";
+import LineLoader from "./components/common/LineLoader";
 
 const App = () => {
-  const [movies, setMovies] = useState([]);
-  const [genres, setGenres] = useState([]);
+  const [movies, setMovies] = useState({ isLoading: false, result: [] });
+  const [genres, setGenres] = useState({ isLoading: false, result: [] });
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [currentYear, setCurrentYear] = useState(2012);
 
+  const isInitialLoadRef = useRef(true);
+
   useEffect(() => {
+    if (isInitialLoadRef.current) {
+      isInitialLoadRef.current = false;
+      return;
+    }
+
     async function fetchData() {
-      const respMovies = await fetchMovies(currentYear);
-      const respGenres = await fetchGenres();
-      if (respMovies) setMovies(respMovies);
-      else setMovies([]);
-      if (respGenres) setGenres(respGenres);
-      else setGenres([]);
+      try {
+        setMovies({ ...movies, isLoading: true });
+        setGenres({ ...genres, isLoading: true });
+
+        const respMovieAndGenres = await Promise.allSettled([
+          fetchMovies(currentYear),
+          fetchGenres(),
+        ]);
+        if (respMovieAndGenres[0].status === "fulfilled") {
+          const moviesResp = respMovieAndGenres[0].value;
+          setMovies({ result: moviesResp.data.results, isLoading: false });
+        } else {
+          setMovies({ result: [], isLoading: false });
+          throw respMovieAndGenres[0].reason;
+        }
+        if (respMovieAndGenres[1].status === "fulfilled") {
+          const genresResp = respMovieAndGenres[1].value;
+          setGenres({
+            result: genresResp.data.genres,
+            isLoading: false,
+          });
+        } else {
+          setGenres({ result: [], isLoading: false });
+          throw respMovieAndGenres[1].reason;
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
     }
     fetchData();
-    // setMovies(fetchMovies(currentYear));
-    // setGenres(fetchGenres());
-
-    // fetchMovies(currentYear);
-    // fetchGenres();
   }, [currentYear]);
 
   const handleGenreChange = (genreId) => {
@@ -37,19 +63,25 @@ const App = () => {
     });
   };
 
-  // console.log("MOVIES: ", movies);
-  // console.log("GENRES: ", genres);
+  console.log("MOVIES: ", movies);
+  console.log("GENRES: ", genres);
   // console.log("SELECTED GENRES: ", selectedGenres);
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Movie App</h1>
-      <GenreFilter
-        genres={genres}
-        selectedGenres={selectedGenres}
-        onGenreChange={handleGenreChange}
-      />
-      <MovieList movies={movies} />
+    <div className="dark:bg-slate-800 h-full mx-auto">
+      <NavBar />
+      <div class="dark:bg-slate-800 h-full px-6 py-8 ring-1 ring-slate-900/5 shadow-xl container mx-auto pt-20">
+        {genres.isLoading ? (
+          <LineLoader height={5} />
+        ) : (
+          <GenreFilter
+            genres={genres.result}
+            selectedGenres={selectedGenres}
+            onGenreChange={handleGenreChange}
+          />
+        )}
+        <MovieList movies={movies.result} year={currentYear} />
+      </div>
     </div>
   );
 };

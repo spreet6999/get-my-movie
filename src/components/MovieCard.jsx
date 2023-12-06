@@ -3,6 +3,7 @@ import React from "react";
 
 const MovieCard = ({ movie }) => {
   const { title, poster_path, genre, cast, director, description } = movie;
+  // title, image, genre, cast, director, and a short description
 
   return (
     <div className="flex flex-col items-center p-4 mb-4 bg-white rounded-lg shadow-md hover:shadow hover:border-1 hover:cursor-pointer">

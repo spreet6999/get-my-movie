@@ -1,24 +1,33 @@
 // GenreFilter.js
 import React from "react";
+import Chip from "./common/Chip";
 
-const GenreFilter = ({ genres, selectedGenres, onGenreChange }) => {
+const GenreFilter = ({
+  genres = [],
+  selectedGenres = [],
+  onGenreChange = () => {},
+}) => {
   return (
-    <div className="flex items-center space-x-4 mb-4">
-      <span className="font-bold">Filter by Genre:</span>
-      {genres?.length
-        ? genres.map((genre) => (
-            <label key={genre.id} className="cursor-pointer">
-              <input
-                type="checkbox"
+    <React.Fragment>
+      <h2 className="text-slate-100 font-bold text-xl mb-2">Filter by Genre</h2>
+      <div class="text-slate-100 flex gap-2 overflow-x-auto no-scrollbar mb-3">
+        <Chip isSelected={selectedGenres.length === 0} value={-1}>
+          All
+        </Chip>
+        {genres?.length
+          ? genres.map((genre) => (
+              <Chip
+                key={genre.id}
+                isSelected={selectedGenres?.includes(genre)}
+                text={genre.name}
                 value={genre.id}
-                checked={selectedGenres.includes(genre.id)}
-                onChange={() => onGenreChange(genre.id)}
-              />
-              <span className="ml-2">{genre.name}</span>
-            </label>
-          ))
-        : null}
-    </div>
+              >
+                {genre.name}
+              </Chip>
+            ))
+          : null}
+      </div>
+    </React.Fragment>
   );
 };
 
