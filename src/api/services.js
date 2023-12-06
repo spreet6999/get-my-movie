@@ -1,5 +1,8 @@
 import axiosInstance from "./axiosInterceptor";
 
+// Fetching api key from .env
+const API_KEY = process.env.REACT_APP_API_KEY || "";
+
 const ERROR_MESSAGE_TYPE = {
   400: "Cannot process the request",
   401: "Unauthorized Please login again",
@@ -16,9 +19,9 @@ const ERROR_MESSAGE_TYPE = {
 export const fetchMovies = async (year) => {
   try {
     const resp = await axiosInstance.get(
-      `/discover/movie?api_key=2dca580c2a14b55200e784d157207b4d&sort_by=popularity.desc&primary_release_year=${year}&page=1&vote_count.gte=100`
+      `/discover/movie?api_key=${API_KEY}&sort_by=popularity.desc&primary_release_year=${year}&page=1&vote_count.gte=100`
     );
-    // console.log("AXIOS MOVIES RESP: ", resp);
+
     if (resp.status === 200) {
       return resp;
     } else {
@@ -35,7 +38,7 @@ export const fetchMovies = async (year) => {
 export const fetchGenres = async () => {
   try {
     const resp = await axiosInstance.get(
-      "/genre/movie/list?api_key=2dca580c2a14b55200e784d157207b4d"
+      `/genre/movie/list?api_key=${API_KEY}`
     );
     // console.log("AXIOS GENRES RESP: ", resp);
     if (resp.status === 200) {
