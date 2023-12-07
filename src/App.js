@@ -68,11 +68,11 @@ const App = () => {
   // console.log("SELECTED GENRES: ", selectedGenres);
 
   return (
-    <div className="dark:bg-slate-800 h-full mx-auto">
+    <div className="dark:bg-slate-900 h-full mx-auto">
       <NavBar />
-      <div class="dark:bg-slate-800 h-full px-6 py-8 ring-1 ring-slate-900/5 shadow-xl container mx-auto pt-20">
+      <div class="dark:bg-slate-900 h-full px-6 py-8 ring-1 ring-slate-900/5 shadow-xl container mx-auto pt-20">
         {genres.isLoading ? (
-          <LineLoader height={5} />
+          <LineLoader />
         ) : (
           <GenreFilter
             genres={genres.result}
@@ -80,7 +80,11 @@ const App = () => {
             onGenreChange={handleGenreChange}
           />
         )}
-        <MovieList movies={movies.result} year={currentYear} />
+        <MovieList
+          movies={movies.result}
+          genres={genres.result}
+          year={currentYear}
+        />
       </div>
     </div>
   );

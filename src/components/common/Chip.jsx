@@ -1,7 +1,7 @@
 import React from "react";
 
 function Chip({ isSelected = false, children = null }) {
-  const bgColor = isSelected ? "bg-purple-600" : "bg-gray-900";
+  const bgColor = isSelected ? "bg-purple-600" : "bg-slate-700";
   return (
     <div
       class={
