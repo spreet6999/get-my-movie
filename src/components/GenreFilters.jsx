@@ -1,4 +1,3 @@
-// GenreFilter.js
 import React from "react";
 import Chip from "./common/Chip";
 
@@ -10,7 +9,14 @@ const GenreFilter = ({
   return (
     <React.Fragment>
       <h2 className="text-slate-100 font-bold text-xl mb-2">Filter by Genre</h2>
-      <div class="text-slate-100 flex gap-2 overflow-x-auto no-scrollbar mb-3">
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+          // console.log(e.target);
+          onGenreChange(parseInt(e?.target?.id));
+        }}
+        class="text-slate-100 flex gap-2 overflow-x-auto no-scrollbar mb-3 hover:cursor-pointer"
+      >
         <Chip isSelected={selectedGenres.length === 0} value={-1}>
           All
         </Chip>
@@ -18,9 +24,10 @@ const GenreFilter = ({
           ? genres.map((genre) => (
               <Chip
                 key={genre.id}
-                isSelected={selectedGenres?.includes(genre)}
+                isSelected={selectedGenres?.includes(genre.id)}
                 text={genre.name}
                 value={genre.id}
+                // onClick={onGenreChange}
               >
                 {genre.name}
               </Chip>

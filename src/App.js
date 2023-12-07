@@ -59,13 +59,14 @@ const App = () => {
       if (selectedGenres.includes(genreId)) {
         return prevState.filter((id) => id !== genreId);
       }
-      return [...prevState, genreId];
+
+      return genreId ? [...prevState, genreId] : prevState;
     });
   };
 
   console.log("MOVIES: ", movies);
   console.log("GENRES: ", genres);
-  // console.log("SELECTED GENRES: ", selectedGenres);
+  console.log("SELECTED GENRES: ", selectedGenres);
 
   return (
     <div className="dark:bg-slate-900 h-full mx-auto">

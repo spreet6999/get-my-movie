@@ -1,6 +1,11 @@
 import React from "react";
 
-function Chip({ isSelected = false, children = null }) {
+function Chip({
+  isSelected = false,
+  value = "",
+  // onClick = () => {},
+  children = null,
+}) {
   const bgColor = isSelected ? "bg-purple-600" : "bg-slate-700";
   return (
     <div
@@ -8,8 +13,10 @@ function Chip({ isSelected = false, children = null }) {
         "relative grid select-none items-center whitespace-nowrap rounded-lg py-1.5 px-3 text-xs font-bold uppercase" +
         ` ${bgColor}`
       }
+      // onClick={() => onClick(value)}
+      id={value}
     >
-      <span>{children}</span>
+      <span id={value}>{children}</span>
     </div>
   );
 }
