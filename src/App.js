@@ -17,40 +17,39 @@ const App = () => {
   useEffect(() => {
     if (isInitialLoadRef.current) {
       isInitialLoadRef.current = false;
+      async function fetchData() {
+        try {
+          setMovies({ ...movies, isLoading: true });
+          setGenres({ ...genres, isLoading: true });
+
+          const respMovieAndGenres = await Promise.allSettled([
+            fetchMovies(currentYear),
+            fetchGenres(),
+          ]);
+          if (respMovieAndGenres[0].status === "fulfilled") {
+            const moviesResp = respMovieAndGenres[0].value;
+            setMovies({ result: moviesResp.data.results, isLoading: false });
+          } else {
+            setMovies({ result: [], isLoading: false });
+            throw respMovieAndGenres[0].reason;
+          }
+          if (respMovieAndGenres[1].status === "fulfilled") {
+            const genresResp = respMovieAndGenres[1].value;
+            setGenres({
+              result: genresResp.data.genres,
+              isLoading: false,
+            });
+          } else {
+            setGenres({ result: [], isLoading: false });
+            throw respMovieAndGenres[1].reason;
+          }
+        } catch (error) {
+          console.log(error.message);
+        }
+      }
+      fetchData();
       return;
     }
-
-    async function fetchData() {
-      try {
-        setMovies({ ...movies, isLoading: true });
-        setGenres({ ...genres, isLoading: true });
-
-        const respMovieAndGenres = await Promise.allSettled([
-          fetchMovies(currentYear),
-          fetchGenres(),
-        ]);
-        if (respMovieAndGenres[0].status === "fulfilled") {
-          const moviesResp = respMovieAndGenres[0].value;
-          setMovies({ result: moviesResp.data.results, isLoading: false });
-        } else {
-          setMovies({ result: [], isLoading: false });
-          throw respMovieAndGenres[0].reason;
-        }
-        if (respMovieAndGenres[1].status === "fulfilled") {
-          const genresResp = respMovieAndGenres[1].value;
-          setGenres({
-            result: genresResp.data.genres,
-            isLoading: false,
-          });
-        } else {
-          setGenres({ result: [], isLoading: false });
-          throw respMovieAndGenres[1].reason;
-        }
-      } catch (error) {
-        console.log(error.message);
-      }
-    }
-    fetchData();
   }, [currentYear]);
 
   const handleGenreChange = (genreId) => {
@@ -71,7 +70,7 @@ const App = () => {
   return (
     <div className="dark:bg-slate-900 h-full mx-auto">
       <NavBar />
-      <div class="dark:bg-slate-900 h-full px-6 py-8 ring-1 ring-slate-900/5 shadow-xl container mx-auto pt-20">
+      <div className="dark:bg-slate-900 h-full px-6 py-8 ring-1 ring-slate-900/5 shadow-xl container mx-auto pt-28">
         {genres.isLoading ? (
           <LineLoader />
         ) : (
