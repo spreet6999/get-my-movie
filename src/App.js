@@ -44,7 +44,8 @@ const App = () => {
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
           console.log("Reached last movie!");
-          handleYearIncrease();
+          if (currentYear < new Date().getFullYear())
+            setCurrentYear((prevState) => prevState + 1);
         }
       });
 
@@ -132,11 +133,6 @@ const App = () => {
     });
   };
 
-  function handleYearIncrease() {
-    if (currentYear < new Date().getFullYear())
-      setCurrentYear((prevState) => prevState + 1);
-  }
-
   const moviesWithGenres = useMemo(
     () =>
       movies.result.map((movieObj) => ({
@@ -153,7 +149,7 @@ const App = () => {
 
   console.log("MOVIES: ", moviesWithGenres);
   // console.log("GENRES: ", genres);
-  // console.log("SELECTED GENRES: ", selectedGenres);
+  console.log("SELECTED GENRES: ", selectedGenres);
   // console.log("CURRENT YEAR: ", currentYear);
 
   return (
