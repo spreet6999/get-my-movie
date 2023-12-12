@@ -8,14 +8,16 @@ const GenreFilter = ({
 }) => {
   return (
     <React.Fragment>
-      <h2 className="text-slate-100 font-bold text-xl mb-2">Filter by Genre</h2>
+      <h2 className="text-slate-100 font-bold text-2xl mb-2">
+        Filter by Genre
+      </h2>
       <div
         onClick={(e) => {
           e.stopPropagation();
           // console.log(e.target);
           onGenreChange(parseInt(e?.target?.id));
         }}
-        class="text-slate-100 flex gap-2 overflow-x-auto no-scrollbar mb-3 hover:cursor-pointer"
+        className="text-slate-100 flex gap-2 overflow-x-auto no-scrollbar mb-3 hover:cursor-pointer"
       >
         <Chip isSelected={selectedGenres.length === 0} value={-1}>
           All
@@ -27,7 +29,6 @@ const GenreFilter = ({
                 isSelected={selectedGenres?.includes(genre.id)}
                 text={genre.name}
                 value={genre.id}
-                // onClick={onGenreChange}
               >
                 {genre.name}
               </Chip>

@@ -4,6 +4,16 @@
 
 @layer utilities {
     @variants responsive {
+      html,body {
+        min-height: 100vh;
+        /* height: 100% !important; */
+              --tw-bg-opacity: 1;
+              background-color: rgb(15 23 42 / var(--tw-bg-opacity));
+      }
+      #root {
+        min-height: 100vh;
+      }
+
       .logo {
         font-size: 2.5rem;
         font-weight: bold;
