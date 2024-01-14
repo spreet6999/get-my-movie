@@ -50,8 +50,8 @@ npm install
 ```
 
 4. Configure the environment variables - To use the movie project, you will need to set up some environment variables on your development machine
-  a) Create a **`.env`** file in the root of the project.
-  b) Add the following variables to the **`.env`** file, replacing the placeholder values with your own:
+- Create a **`.env`** file in the root of the project.
+- Add the following variables to the **`.env`** file, replacing the placeholder values with your own:
 ```jsx
   REACT_APP_API_KEY="your-tmdb-api-key"
   ```
