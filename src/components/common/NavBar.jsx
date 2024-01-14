@@ -1,6 +1,9 @@
 import React from "react";
+import SearchBar from "./SearchBar";
 
-function NavBar() {
+function NavBar({
+  searchbarProps = { value: "", onChange: () => {}, label: "" },
+}) {
   return (
     <React.Fragment>
       <nav className="flex w-full items-center justify-between flex-wrap p-6 fixed top-0 bg-inherit z-10">
@@ -10,6 +13,7 @@ function NavBar() {
             OVIEFLIX
           </span>
         </div>
+        <SearchBar {...searchbarProps} />
       </nav>
     </React.Fragment>
   );

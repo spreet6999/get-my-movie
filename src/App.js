@@ -16,6 +16,17 @@ import Loader from "./components/common/Loader";
 import { fetchGenres, fetchMovies } from "./api/services";
 import { unwrapMovies } from "./utils/utils";
 
+function debouncedSearch(func, wait = 300) {
+  let timerId = null;
+  return function (...args) {
+    const context = this;
+    clearInterval(timerId);
+    timerId = setTimeout(() => {
+      func.apply(context, args);
+    }, wait);
+  };
+}
+
 const App = () => {
   const [movies, setMovies] = useState({
     isLoading: false,
@@ -31,6 +42,7 @@ const App = () => {
   });
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [currentYear, setCurrentYear] = useState(2012);
+  const [searchValue, setSearchValue] = useState("");
 
   const isInitialLoadRef = useRef(true);
 
@@ -50,7 +62,7 @@ const App = () => {
       });
 
       if (node) observer.current.observe(node);
-      if (currentYear === 2023) observer.current.unobserve(node);
+      if (currentYear === 2023 && node) observer.current.unobserve(node);
     },
     [movies?.isLoading, currentYear]
   );
@@ -98,12 +110,15 @@ const App = () => {
 
       fetchData();
       return;
-    } else {
+    }
+    console.log(isInitialLoadRef.current);
+    if (!isInitialLoadRef.current) {
+      console.log(isInitialLoadRef.current);
       async function fetchMoreMovies() {
         try {
           setMovies((prevState) => ({ ...prevState, isLoading: true }));
 
-          const moviesResp = await fetchMovies(currentYear);
+          const moviesResp = await fetchMovies(currentYear, searchValue);
           setMovies((prevState) => ({
             result: [
               ...prevState?.result,
@@ -120,7 +135,7 @@ const App = () => {
 
       fetchMoreMovies();
     }
-  }, [currentYear]);
+  }, [currentYear, searchValue]);
 
   const handleGenreChange = (genreId) => {
     // Additional logic to update selected genres and fetch filtered movies.
@@ -133,9 +148,32 @@ const App = () => {
     });
   };
 
+  const handleSearchValue = (e) => {
+    console.log("VALUE: ", e.target.value);
+    setSearchValue(e.target.value);
+  };
+
+  // const debouncedSearchValue = useCallback(debouncedSearch(handleFetchBooks), handleFetchBooks)
+
+  const filteredMovies = useMemo(
+    () =>
+      selectedGenres.length > 0
+        ? movies?.result.map((movieObj) => ({
+            // const targetValues = new Set(selectedGenres);
+            ...movieObj,
+            movies: movieObj?.movies.filter((movie) => {
+              const allValues = new Set(movie.genre_ids);
+
+              return selectedGenres.every((id) => allValues.has(id));
+            }),
+          }))
+        : movies?.result,
+    [movies, selectedGenres]
+  );
+
   const moviesWithGenres = useMemo(
     () =>
-      movies.result.map((movieObj) => ({
+      filteredMovies.map((movieObj) => ({
         ...movieObj,
         movies: movieObj?.movies.map((movie) => ({
           ...movie,
@@ -144,18 +182,26 @@ const App = () => {
             .filter((item) => item),
         })),
       })),
-    [movies, genres]
+    [filteredMovies, genres]
   );
 
-  console.log("MOVIES: ", moviesWithGenres);
+  // console.log("MOVIES: ", moviesWithGenres);
   // console.log("GENRES: ", genres);
-  console.log("SELECTED GENRES: ", selectedGenres);
+  // console.log("SELECTED GENRES: ", selectedGenres);
   // console.log("CURRENT YEAR: ", currentYear);
+  // console.log("filteredMovies: ", filteredMovies);
+  console.log("SearchValue: ", searchValue);
 
   return (
     <div className="dark:bg-slate-900 h-full mx-auto">
-      <NavBar />
-      <div className="dark:bg-slate-900 h-full px-6 py-8 ring-1 ring-slate-900/5 shadow-xl container mx-auto pt-28">
+      <NavBar
+        searchbarProps={{
+          value: searchValue,
+          onChange: handleSearchValue,
+          label: "Search Movies",
+        }}
+      />
+      <div className="dark:bg-slate-900 h-full px-6 py-8 ring-1 ring-slate-900/5 shadow-xl container mx-auto pt-[6.5rem]">
         {genres?.isLoading ? (
           <LineLoader />
         ) : (
@@ -166,7 +212,7 @@ const App = () => {
           />
         )}
 
-        {movies?.isLoading && movies.length === 0 ? (
+        {movies?.isLoading && movies?.result.length === 0 ? (
           <Loader />
         ) : (
           <MovieList

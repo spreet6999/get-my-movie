@@ -13,10 +13,13 @@ const ERROR_MESSAGE_TYPE = {
   504: "Server timeout please try after sometime",
 };
 
-export const fetchMovies = async (year) => {
+export const fetchMovies = async (year, searchString = "") => {
   try {
     const resp = await axiosInstance.get(
-      `/discover/movie?api_key=${API_KEY}&sort_by=popularity.desc&primary_release_year=${year}&page=1&vote_count.gte=100`
+      `/discover/movie?api_key=${API_KEY}&sort_by=popularity.desc&primary_release_year=${year}&page=1&vote_count.gte=100`,
+      {
+        params: searchString?.length ? { query: searchString } : {},
+      }
     );
     console.log("AXIOS MOVIES RESP: ", resp);
 
