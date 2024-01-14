@@ -106,7 +106,18 @@ const App = () => {
               message: "",
             });
           } else {
-            setMovies({ result: [], isLoading: false });
+            setMovies({
+              result: [],
+              isLoading: false,
+              isError: true,
+              message: (
+                <span>
+                  {moviesResp.reason.apiError.message}
+                  <br />
+                  {moviesResp.reason.message}
+                </span>
+              ),
+            });
             throw moviesResp.reason;
           }
 
@@ -215,6 +226,10 @@ const App = () => {
 
         {movies?.isLoading && movies?.result.length === 0 ? (
           <Loader />
+        ) : movies.isError ? (
+          <p className="text-center text-slate-100 font-bold text-xl">
+            {movies.message}
+          </p>
         ) : (
           <MovieList
             movies={moviesWithGenres}
