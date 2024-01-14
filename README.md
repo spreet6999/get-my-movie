@@ -1,74 +1,68 @@
-# get-my-movie
+# get-my-movie (MOVIEFLIX)
 
 A movie info app to show movie info using react and tailwind css and consuming TMDb APIs
 
-# Getting Started with Create React App
+# 🍿 Features 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- A movie information app that displays a list of movies from The
+Movie Database (TMDb) API. 
+- The app shows top movies for each year and users can filter by
+genre
+- the app also loads top movies from previous/next years as the user scrolls through the
+list
+- Smooth infinite scroll: users can smoothly scroll over movies
+- Genre filtering: movies can be filtered by genre
+- Search movies: users can search for movies and can see them in the list
 
-## Available Scripts
+<hr/>
 
-In the project directory, you can run:
+# 🍿 Technology
 
-### `npm start`
+MOVIEFLIX is built using the following technologies:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- ReactJS
+- TMDB API
+- TailwindCSS
+- Axios
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+<hr/>
 
-### `npm test`
+## Getting Started 🚀
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+To get started with get-my-movie app (MOVIEFLIX), follow the installation and usage instructions below.
 
-### `npm run build`
+1. Clone the repository to your local machine:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+git clone https://github.com/spreet6999/get-my-movie.git
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. Navigate to the project directory:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+cd get-my-movie
+```
 
-### `npm run eject`
+3. Install the required dependencies:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+npm install
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+4. Configure the environment variables - To use the movie project, you will need to set up some environment variables on your development machine
+  a) Create a **`.env`** file in the root of the project.
+  b) Add the following variables to the **`.env`** file, replacing the placeholder values with your own:
+```jsx
+  REACT_APP_API_KEY="your-tmdb-api-key"
+  ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+6. Start the development server:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```bash
+npm start
+```
 
-## Learn More
+6. Open your favorite web browser and visit http://localhost:3000 to explore MOVIEFLIX.\
+   The page will automatically reload when you make changes, and you can check the console for any lint errors or development insights.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+<br/>
