@@ -7,7 +7,7 @@ const MovieList = ({
   latestFetchedYear = 2012,
   intersectionRef,
 }) => {
-  console.log("Re-rendered", latestFetchedYear);
+  // console.log("Re-rendered", latestFetchedYear);
 
   return (
     <div className="pt-20">

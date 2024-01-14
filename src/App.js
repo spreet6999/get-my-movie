@@ -14,18 +14,7 @@ import NavBar from "./components/common/NavBar";
 import LineLoader from "./components/common/LineLoader";
 import Loader from "./components/common/Loader";
 import { fetchGenres, fetchMovies } from "./api/services";
-import { unwrapMovies } from "./utils/utils";
-
-function debouncedSearch(func, wait = 300) {
-  let timerId = null;
-  return function (...args) {
-    const context = this;
-    clearInterval(timerId);
-    timerId = setTimeout(() => {
-      func.apply(context, args);
-    }, wait);
-  };
-}
+import { unwrapMovies, debounce } from "./utils/utils";
 
 const App = () => {
   const [movies, setMovies] = useState({
@@ -55,7 +44,7 @@ const App = () => {
 
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
-          console.log("Reached last movie!");
+          // console.log("Reached last movie!");
           if (currentYear < new Date().getFullYear())
             setCurrentYear((prevState) => prevState + 1);
         }
@@ -66,6 +55,34 @@ const App = () => {
     },
     [movies?.isLoading, currentYear]
   );
+
+  async function fetchMoreMovies(currentYear = 2012, searchValue = "") {
+    try {
+      setMovies((prevState) =>
+        Boolean(searchValue.length === 0)
+          ? { ...prevState, isLoading: true }
+          : {
+              isLoading: true,
+              result: [],
+              isError: false,
+              message: "",
+            }
+      );
+
+      const moviesResp = await fetchMovies(currentYear, searchValue);
+      setMovies((prevState) => ({
+        result: [
+          ...prevState?.result,
+          ...[unwrapMovies(moviesResp?.data.results, currentYear)],
+        ],
+        isLoading: false,
+        isError: false,
+        message: "",
+      }));
+    } catch (error) {
+      console.log("ERROR: ", error.message);
+    }
+  }
 
   useEffect(() => {
     if (isInitialLoadRef.current) {
@@ -111,31 +128,12 @@ const App = () => {
       fetchData();
       return;
     }
-    console.log(isInitialLoadRef.current);
+    // console.log(isInitialLoadRef.current);
     if (!isInitialLoadRef.current) {
-      console.log(isInitialLoadRef.current);
-      async function fetchMoreMovies() {
-        try {
-          setMovies((prevState) => ({ ...prevState, isLoading: true }));
-
-          const moviesResp = await fetchMovies(currentYear, searchValue);
-          setMovies((prevState) => ({
-            result: [
-              ...prevState?.result,
-              ...[unwrapMovies(moviesResp?.data.results, currentYear)],
-            ],
-            isLoading: false,
-            isError: false,
-            message: "",
-          }));
-        } catch (error) {
-          console.log("ERROR: ", error.message);
-        }
-      }
-
-      fetchMoreMovies();
+      // console.log(isInitialLoadRef.current);
+      fetchMoreMovies(currentYear);
     }
-  }, [currentYear, searchValue]);
+  }, [currentYear]);
 
   const handleGenreChange = (genreId) => {
     // Additional logic to update selected genres and fetch filtered movies.
@@ -148,12 +146,15 @@ const App = () => {
     });
   };
 
-  const handleSearchValue = (e) => {
-    console.log("VALUE: ", e.target.value);
-    setSearchValue(e.target.value);
-  };
+  const debounceFetchMoreMovies = useCallback(debounce(fetchMoreMovies), [
+    fetchMoreMovies,
+  ]);
 
-  // const debouncedSearchValue = useCallback(debouncedSearch(handleFetchBooks), handleFetchBooks)
+  const handleSearchValue = (e) => {
+    // console.log("VALUE: ", e.target.value);
+    setSearchValue(e.target.value);
+    debounceFetchMoreMovies(2012, e.target.value);
+  };
 
   const filteredMovies = useMemo(
     () =>
@@ -190,7 +191,7 @@ const App = () => {
   // console.log("SELECTED GENRES: ", selectedGenres);
   // console.log("CURRENT YEAR: ", currentYear);
   // console.log("filteredMovies: ", filteredMovies);
-  console.log("SearchValue: ", searchValue);
+  // console.log("SearchValue: ", searchValue);
 
   return (
     <div className="dark:bg-slate-900 h-full mx-auto">

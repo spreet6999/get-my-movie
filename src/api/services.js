@@ -18,7 +18,7 @@ export const fetchMovies = async (year, searchString = "") => {
     const resp = await axiosInstance.get(
       `/discover/movie?api_key=${API_KEY}&sort_by=popularity.desc&primary_release_year=${year}&page=1&vote_count.gte=100`,
       {
-        params: searchString?.length ? { query: searchString } : {},
+        params: searchString?.length ? { with_keywords: searchString } : {},
       }
     );
     console.log("AXIOS MOVIES RESP: ", resp);
